@@ -1,10 +1,21 @@
 sudo: required
 services:
   - docker
+env:
+  global:
+    - REGISTRY_USER=azakahulautomation
 
 script:
-  - docker build --tag myimage .
-  - docker run myimage
+  - docker build --tag  scottrotvoldtravisci/getting-started-docker-travis .
+  - docker run scottrotvoldtravisci/getting-started-docker-travis
 
 after_script:
   - docker images
+
+before_deploy:
+  - docker login -u "$REGISTRY_USER" -p "$DOCKERHUBPASS"
+deploy:
+  provider: script
+  script: docker push scottrotvoldtravisci/getting-started-docker-travis
+  on:
+    branch: master
